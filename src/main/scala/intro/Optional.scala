@@ -10,6 +10,8 @@ package intro
  * standard library where Some -> Full, and None -> Empty.
  */
 sealed trait Optional[A] {
+  import Optional._
+
   /*
    * Implement fold for Optional.
    *
@@ -29,7 +31,10 @@ sealed trait Optional[A] {
     full: A => X,
     empty: => X
   ): X =
-    ???
+    this match {
+      case Full(v) => full(v)
+      case Empty() => empty
+    }
 
   /*
    * Implement map for Optional[A].
@@ -45,7 +50,7 @@ sealed trait Optional[A] {
    *  = Empty()
    */
   def map[B](f: A => B): Optional[B] =
-    ???
+    fold(v => ok(f(v)), empty)
 
   /*
    * Implement flatMap.
@@ -65,7 +70,7 @@ sealed trait Optional[A] {
    * Advanced: Try using fold.
    */
   def flatMap[B](f: A => Optional[B]): Optional[B] =
-    ???
+    fold(f, empty)
 
   /*
    * Extract the value if it is success case otherwise use default value.
@@ -78,7 +83,7 @@ sealed trait Optional[A] {
    *  = 10
    */
   def getOrElse(otherwise: => A): A =
-    ???
+    fold(v => v, otherwise)
 
   /*
    * Implement choice, take this result if successful otherwise take
@@ -97,7 +102,7 @@ sealed trait Optional[A] {
    *  = Empty()
    */
   def |||(alternative: => Optional[A]): Optional[A] =
-    ???
+    fold(_ => this, alternative)
 }
 
 case class Full[A](a: A) extends Optional[A]

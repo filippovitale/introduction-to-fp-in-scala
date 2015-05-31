@@ -1,15 +1,15 @@
 ## Workshop progress
 
 #### Just enough scala
-- [ ] `src/main/scala/intro/Scala.scala`
-- [ ] `src/main/scala/intro/CheatSheet.scala`
+- [x] `src/main/scala/intro/Scala.scala`
+- [x] `src/main/scala/intro/CheatSheet.scala`
 
 #### What is functional programming?
-- [ ] `src/main/scala/intro/Intro.scala`
+- [x] `src/main/scala/intro/Intro.scala`
 
 #### HOF Examples
-- [ ] `src/main/scala/intro/Id.scala`
-- [ ] `src/main/scala/intro/Optional.scala`
+- [x] `src/main/scala/intro/Id.scala`
+- [x] `src/main/scala/intro/Optional.scala`
 
 #### HOF Exercises
 - [ ] Lists - `src/main/scala/intro/List.scala`
@@ -40,7 +40,7 @@
 #### Patterns in Types
 - [ ] `src/main/scala/patterns/Reader.scala`
 - [ ] `src/main/scala/patterns/Writer.scala`
-- [ ] `src/main/scala/patterns/State.scala`
+- [x] `src/main/scala/patterns/State.scala`
 - [ ] `src/main/scala/patterns/Http.scala`
 - [ ] `src/main/scala/patterns/Applicative.scala`
 - [ ] `src/main/scala/patterns/Monad.scala`
