@@ -12,7 +12,7 @@
 - [x] `src/main/scala/intro/Optional.scala`
 
 #### HOF Exercises
-- [ ] Lists - `src/main/scala/intro/List.scala`
+- [x] Lists - `src/main/scala/intro/List.scala`
 - [ ] Errors without exceptions - `src/main/scala/intro/Result.scala`
 
 #### Type Classes Example

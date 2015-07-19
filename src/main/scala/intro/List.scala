@@ -47,8 +47,10 @@ object Lists {
    * scala> Lists.length(List(1, 2, 3, 4))
    * resX: Int = 4
    */
-  def length[A](xs: List[A]): Int =
-    ???
+  def length[A](xs: List[A]): Int = xs match {
+    case Nil    => 0
+    case h :: t => 1 + length(t)
+  }
 
   /*
    * Exercise 2:
@@ -58,8 +60,7 @@ object Lists {
    * scala> Lists.lengthX(List(1, 2, 3, 4))
    * resX: Int = 4
    */
-  def lengthX[A](xs: List[A]): Int =
-    ???
+  def lengthX[A](xs: List[A]): Int = (xs :\ 0) { (_, acc) => acc + 1 }
 
   /*
    * Exercise 3:
@@ -69,8 +70,7 @@ object Lists {
    * scala> Lists.append(List(1, 2, 3, 4), List(5, 6, 7, 8))
    * resX: List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8)
    */
-  def append[A](x: List[A], y: List[A]): List[A] =
-    ???
+  def append[A](x: List[A], y: List[A]): List[A] = (x :\ y)(_ :: _) // same as (y /: x.reverse) { (a, e) => e :: a }
 
   /*
    * Exercise 4:
@@ -87,8 +87,7 @@ object Lists {
    *     Type annotations are required when scala can
    *     not infer what you mean.
    */
-  def map[A, B](xs: List[A])(f: A => B): List[B] =
-    ???
+  def map[A, B](xs: List[A])(f: A => B): List[B] = (xs :\ (Nil: List[B]))(f(_) :: _)
 
   /*
    * Exercise 5:
@@ -98,8 +97,9 @@ object Lists {
    * scala> Lists.filter(List(1, 2, 3, 4))(i => i < 3)
    * resX: List[Int] = List(1, 2)
    */
-  def filter[A](xs: List[A])(p: A => Boolean): List[A] =
-    ???
+  def filter[A](xs: List[A])(p: A => Boolean): List[A] = (xs :\ (Nil: List[A])) { (e, a) =>
+    if (p(e)) e :: a else a
+  }
 
   /*
    * Exercise 6:
@@ -116,9 +116,7 @@ object Lists {
    *     Type annotations are required when scala can
    *     not infer what you mean.
    */
-  def reverse[A](xs: List[A]): List[A] =
-    ???
-
+  def reverse[A](xs: List[A]): List[A] = ((Nil: List[A]) /: xs) { (a, e) => e :: a }
 
   /*
    * *Challenge* Exercise 7:
@@ -133,8 +131,9 @@ object Lists {
    * scala> Lists.sequence(List[Option[Int]](Some(1), None, Some(3)))
    * resX: Option[List[Int]] = None
    */
-  def sequence[A](xs: List[Option[A]]): Option[List[A]] =
-    ???
+  def sequence[A](xs: List[Option[A]]): Option[List[A]] = (xs :\ Option(List.empty[A])) { (oe, oa) =>
+    oe.flatMap(e => oa.map(e :: _))
+  }
 
   /*
    * *Challenge* Exercise 8:
@@ -158,6 +157,11 @@ object Lists {
    * ~~~ library hint: use can just use List[A]#sorted and/or List[A]#reverse to
    *     get the list in the correct order.   *
    */
-  def ranges(xs: List[Int]): List[(Int, Int)] =
-    ???
+  def ranges(xs: List[Int]): List[(Int, Int)] = {
+    val xss = xs.sorted
+    (List((xss.head, xss.head)) /: xss.tail) { (a, e) =>
+      if(e == a.head._2 + 1) (a.head._1, e) :: a.tail
+      else (e, e) :: a
+    }.reverse
+  }
 }
