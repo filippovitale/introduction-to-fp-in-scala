@@ -22,7 +22,7 @@ sealed trait Optional[A] {
    * scala> Full(1).fold(x => x, 0)
    *  = 1
    *
-   * scala> Empty().fold(x => x, 0)
+   * scala> Empty[Int]().fold(x => x, 0)
    *  = 0
    */
   def fold[X](
@@ -42,7 +42,7 @@ sealed trait Optional[A] {
    *  = Full(11)
    *
    * scala> Empty[Int]().map(x => x + 10)
-   *  = Emptyy()
+   *  = Empty()
    */
   def map[B](f: A => B): Optional[B] =
     ???
