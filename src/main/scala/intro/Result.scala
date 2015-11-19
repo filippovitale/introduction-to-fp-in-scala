@@ -143,14 +143,14 @@ object Result {
   /*
    * *Challenge* Exercise 6:
    *
-   * Sequence a list of Result into an Result of Lists by producing
+   * Sequence a list of Result into a Result of List by producing
    * Ok of a list of all the values or returning Fail on the first
    * Fail case.
    *
-   * scala> Lists.sequence(List[Result[Int]](Ok(1), Ok(2), Ok(3)))
+   * scala> Result.sequence(List[Result[Int]](Ok(1), Ok(2), Ok(3)))
    * resX: Result[List[Int]] = Ok(List(1, 2, 3))
    *
-   * scala> Lists.sequence(List[Result[Int]](Ok(1), Fail(NotEnoughInput), Ok(3)))
+   * scala> Result.sequence(List[Result[Int]](Ok(1), Fail(NotEnoughInput), Ok(3)))
    * resX: Result[List[Int]] = Fail(NotEnoughInput)
    */
   def sequence[A](xs: List[Result[A]]): Result[List[A]] =
@@ -217,9 +217,21 @@ object ResultExample {
   def run(args: List[String]): Result[Int] =
     ???
 
+  /*
+   * Print the calculation result by passing the input arguments to the method `run`
+   *
+   * scala> ResultExample.main(Array("+","2","3"))
+   * result: 5
+   *
+   * scala> ResultExample.main(Array("+","2"))
+   * failed: NotEnoughInput
+   *
+   * scala> ResultExample.main(Array("+","$","3"))
+   * failed: NotANumber($)
+   */
   def main(args: Array[String]) =
     println(run(args.toList) match {
-      case Ok(result) => s"result: ${result}"
-      case Fail(error) => s"failed: ${error}"
+      case Ok(result) => s"result: $result"
+      case Fail(error) => s"failed: $error"
     })
 }
