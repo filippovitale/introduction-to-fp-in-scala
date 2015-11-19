@@ -13,7 +13,7 @@
 
 #### HOF Exercises
 - [x] Lists - `src/main/scala/intro/List.scala`
-- [ ] Errors without exceptions - `src/main/scala/intro/Result.scala`
+- [x] Errors without exceptions - `src/main/scala/intro/Result.scala`
 
 #### Type Classes Example
 - [ ] `src/main/scala/intro/Equal.scala`

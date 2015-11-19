@@ -37,11 +37,10 @@ sealed trait Result[A] {
    * scala> Fail[Int](NotEnoughInput).fold(_ => 0, x => x)
    *  = 0
    */
-  def fold[X](
-    fail: Error => X,
-    ok: A => X
-  ): X =
-    ???
+  def fold[X](fail: Error => X, ok: A => X): X = this match {
+    case Fail(error) => fail(error)
+    case Ok(value)   => ok(value)
+  }
 
   /*
    * Exercise 2:
@@ -65,8 +64,7 @@ sealed trait Result[A] {
    *
    * Advanced: Try using fold.
    */
-  def flatMap[B](f: A => Result[B]): Result[B] =
-    ???
+  def flatMap[B](f: A => Result[B]): Result[B] = fold(Fail(_), f)
 
   /*
    * Exercise 3:
@@ -85,8 +83,7 @@ sealed trait Result[A] {
    *
    * Advanced: Try using flatMap.
    */
-  def map[B](f: A => B): Result[B] =
-    ???
+  def map[B](f: A => B): Result[B] = flatMap(value => Ok(f(value)))
 
   /*
    * Exercise 4:
@@ -99,8 +96,7 @@ sealed trait Result[A] {
    * scala> Fail(NotEnoughInput).getOrElse(10)
    *  = 10
    */
-  def getOrElse(otherwise: => A): A =
-    ???
+  def getOrElse(otherwise: => A): A = fold(_ => otherwise, identity)
 
   /*
    * Exercise 5:
@@ -120,8 +116,7 @@ sealed trait Result[A] {
    * scala> Fail[Int](NotEnoughInput) ||| Fail[Int](UnexpectedInput("?"))
    *  = Fail[Int](UnexpectedInput("?"))
    */
-  def |||(alternative: => Result[A]): Result[A] =
-    ???
+  def |||(alternative: => Result[A]): Result[A] = fold(_ => alternative, Ok(_))
 }
 
 object Result {
@@ -153,8 +148,11 @@ object Result {
    * scala> Result.sequence(List[Result[Int]](Ok(1), Fail(NotEnoughInput), Ok(3)))
    * resX: Result[List[Int]] = Fail(NotEnoughInput)
    */
-  def sequence[A](xs: List[Result[A]]): Result[List[A]] =
-    ???
+  def sequence[A](xs: List[Result[A]]): Result[List[A]] = xs match {
+    case Nil       => notEnoughInput[List[A]]
+    case ra :: Nil => ra.map(List(_))
+    case ra :: t   => sequence(t).flatMap(as => ra.flatMap(a => ok(a :: as)))
+  }
 }
 
 
@@ -183,20 +181,27 @@ object ResultExample {
    * Hint: Scala defines String#toInt, but warning it throws exceptions
    *       if it is not a valid Int :| i.e. use try catch.
    */
-  def int(body: String): Result[Int] =
-    ???
+  def int(body: String): Result[Int] = scala.util.Try(body.toInt).toOption
+    .fold(Result.notANumber[Int](body))(Result.ok)
 
   /*
    * Parse the operation if it is valid, otherwise fail with InvalidOperation.
    */
-  def operation(op: String): Result[Operation] =
-    ???
+  def operation(op: String): Result[Operation] = op match {
+    case "+" => Result.ok(Plus)
+    case "-" => Result.ok(Minus)
+    case "*" => Result.ok(Multiply)
+    case _   => Result.unexpectedInput(op)
+  }
 
   /*
    * Compute an `answer`, by running operation for n and m.
    */
-  def calculate(op: Operation, n: Int, m: Int): Int =
-     ???
+  def calculate(op: Operation, n: Int, m: Int): Int = op match {
+    case Plus     => n + m
+    case Minus    => n - m
+    case Multiply => n * m
+  }
 
   /*
    * Attempt to compute an `answer`, by:
@@ -207,15 +212,20 @@ object ResultExample {
    *
    * hint: use flatMap / map
    */
-  def attempt(op: String, n: String, m: String): Result[Int] =
-     ???
+  def attempt(op: String, n: String, m: String): Result[Int] = for {
+    x <- operation(op)
+    y <- int(n)
+    z <- int(m)
+  } yield calculate(x, y, z)
 
   /*
    * Run a calculation by pattern matching three elements off the input arguments,
    * parsing the operation, a value for n and a value for m.
    */
-  def run(args: List[String]): Result[Int] =
-    ???
+  def run(args: List[String]): Result[Int] = args match {
+    case List(op, n, m) => attempt(op, n, m)
+    case _              => Result.notEnoughInput
+  }
 
   /*
    * Print the calculation result by passing the input arguments to the method `run`
