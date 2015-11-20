@@ -16,13 +16,13 @@
 - [x] Errors without exceptions - `src/main/scala/intro/Result.scala`
 
 #### Type Classes Example
-- [ ] `src/main/scala/intro/Equal.scala`
+- [x] `src/main/scala/intro/Equal.scala`
 
 #### Type Classes Exercises
-- [ ] `src/main/scala/intro/Functor.scala`
+- [x] `src/main/scala/intro/Functor.scala`
 
 #### Algebra for fun and profit
-- [ ] `src/main/scala/intro/Monoid.scala`
+- [x] `src/main/scala/intro/Monoid.scala`
 
 #### Property based testing
 - [ ] Lists: `src/test/scala/intro/ListProperties.scala`
