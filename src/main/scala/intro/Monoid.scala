@@ -103,6 +103,9 @@ object Monoid {
    * scala> sum(List("hello", " ", "world"))
    *  = "hello world"
    */
+  implicit def StringConcatMonoid: Monoid[String] =
+    ???
+
   def sum[A: Monoid](xs: List[A]): A =
     ???
 }
@@ -121,6 +124,7 @@ object MonoidSyntax {
  * unique ticker name.
  */
 object MonoidChallenge {
+  import Monoid._
   import MonoidSyntax._
   import MonoidTupleInstances._
 
@@ -140,7 +144,7 @@ object MonoidChallenge {
    * Example, only include particular days of data:
    *   MonoidChallenge.compute(MonoidChallenge.Data, stock => stock.date == "2012-01-01" || stock.date == "2012-01-02")
    *
-   * Note there are monoid instances for tuples whos components are all monoids
+   * Note there are monoid instances for tuples whose components are all monoids
    * (this may be useful, but is not the only way to solve this problem).
    */
   def compute(data: List[Stock], predicate: Stock => Boolean): Map[String, Stats] =
