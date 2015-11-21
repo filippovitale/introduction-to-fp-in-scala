@@ -8,13 +8,14 @@ object MonoidSpecification extends Properties("Monoid") {
    */
 
   implicit def MinArbitrary: Arbitrary[Min] =
-    Arbitrary(arbitrary[Int].map(n => Min(n)))
+    Arbitrary(arbitrary[Int].map(Min))
 
   implicit def MaxArbitrary: Arbitrary[Max] =
-    ???
+    Arbitrary(arbitrary[Int].map(Max))
 
   implicit def FirstArbitrary: Arbitrary[First[Int]] =
-    ???
+    //Arbitrary(arbitrary[Int].map(n => First[Int](Option(n))))
+    Arbitrary(arbitrary[Option[Int]].map(First[Int]))
 
   /*
    * *Challenge* Exercise 2: Define arbitrary instance for Endo.
@@ -23,7 +24,7 @@ object MonoidSpecification extends Properties("Monoid") {
    * Hint: Use Gen.oneOf[A](values: A*): Gen[A]
    */
   implicit def EndoArbitrary: Arbitrary[Endo[Int]] =
-    ???
+    Arbitrary(arbitrary[Int => Int].map(n => Endo[Int](n)))
 
   /*
    * *Challenge* Exercise 2: ensure that our Monoid instances satisfy
@@ -35,23 +36,34 @@ object MonoidSpecification extends Properties("Monoid") {
    *       every property.
    */
 
-  property("Min is Lawful") =
-    ???
+  def associative[A](implicit M: Monoid[A], arb: Arbitrary[A]) = forAll((a: A, b: A, c: A) =>
+    Monoid[A].op(a, Monoid[A].op(b, c)) == Monoid[A].op(Monoid[A].op(a, b), c)
+  )
 
-  property("Max is Lawful") =
-    ???
+  def rightIdentity[A](implicit M: Monoid[A], arb: Arbitrary[A]) = forAll((a: A) =>
+    Monoid[A].op(a, Monoid[A].identity) == a
+  )
 
-  property("Endo is Lawful") =
-    ???
+  def leftIdentity[A](implicit M: Monoid[A], arb: Arbitrary[A]) = forAll((a: A) =>
+    Monoid[A].op(Monoid[A].identity, a) == a
+  )
 
-  property("First is Lawful") =
-    ???
+  property("Min is Lawful") = all(associative[Min], rightIdentity[Min], leftIdentity[Min])
 
-  property("List is Lawful") =
-    ???
+  property("Max is Lawful") = all(associative[Max], rightIdentity[Max], leftIdentity[Max])
 
-  property("Map is Lawful") =
-    ???
+  property("Endo is Lawful") = forAll((a: Endo[Int], b: Endo[Int], c: Endo[Int], i: Int) =>
+    Monoid[Endo[Int]].op(a, Monoid[Endo[Int]].op(b, c)).f(i)
+      == Monoid[Endo[Int]].op(Monoid[Endo[Int]].op(a, b), c).f(i) &&
+    Monoid[Endo[Int]].op(a, Monoid[Endo[Int]].identity).f(i) == a.f(i) &&
+    Monoid[Endo[Int]].op(Monoid[Endo[Int]].identity, a).f(i) == a.f(i)
+  )
+
+  property("First is Lawful") = all(associative[First[Int]], rightIdentity[First[Int]], leftIdentity[First[Int]])
+
+  property("List is Lawful") = all(associative[List[Int]], rightIdentity[List[Int]], leftIdentity[List[Int]])
+
+  property("Map is Lawful") =  all(associative[Map[String, Min]], rightIdentity[Map[String, Min]], leftIdentity[Map[String, Min]])
 
 
   /**
@@ -59,7 +71,16 @@ object MonoidSpecification extends Properties("Monoid") {
    *
    * Hint: What about doubles?
    */
-  property("Not a monoid") =
-    ???
+  case class Sub(n: Int)
+
+  implicit def SubMonoid: Monoid[Sub] = new Monoid[Sub] {
+    override def identity: Sub = Sub(0)
+    override def op(x: Sub, y: Sub): Sub = Sub(x.n - y.n)
+  }
+
+  implicit def SubArbitrary: Arbitrary[Sub] =
+    Arbitrary(arbitrary[Int].map(Sub))
+
+  property("Not a monoid") = atLeastOne(associative[Sub], rightIdentity[Sub], leftIdentity[Sub])
 
 }

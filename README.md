@@ -25,8 +25,8 @@
 - [x] `src/main/scala/intro/Monoid.scala`
 
 #### Property based testing
-- [ ] Lists: `src/test/scala/intro/ListProperties.scala`
-- [ ] Laws: `src/test/scala/intro/MonoidProperties.scala`
+- [x] Lists: `src/test/scala/intro/ListSpecification.scala`
+- [x] Laws: `src/test/scala/intro/MonoidSpecification.scala`
 
 #### Parsers
 - [ ] `src/main/scala/challenge/Parser.scala`

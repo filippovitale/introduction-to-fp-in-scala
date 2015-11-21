@@ -158,10 +158,13 @@ object Lists {
    *     get the list in the correct order.   *
    */
   def ranges(xs: List[Int]): List[(Int, Int)] = {
-    val xss = xs.sorted
-    (List((xss.head, xss.head)) /: xss.tail) { (a, e) =>
-      if(e == a.head._2 + 1) (a.head._1, e) :: a.tail
-      else (e, e) :: a
-    }.reverse
+    if (xs.isEmpty) List.empty
+    else {
+      val xss = xs.sorted
+      (List((xss.head, xss.head)) /: xss.tail) { (a, e) =>
+        if (e == a.head._2 + 1) (a.head._1, e) :: a.tail
+        else (e, e) :: a
+      }.reverse
+    }
   }
 }
