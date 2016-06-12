@@ -24,3 +24,9 @@ scalacOptions := Seq(
 , "-feature"
 , "-language:_"
 )
+
+initialCommands in console := """
+  |import challenge._
+  |import intro._
+  |import patterns._
+  |""".stripMargin
