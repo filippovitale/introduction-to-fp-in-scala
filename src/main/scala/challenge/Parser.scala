@@ -83,6 +83,8 @@ case class Parser[A](run: String => Result[ParseState[A]]) {
 }
 
 object Parser {
+  import Result._
+
   /**
    * Return a parser that always succeeds with the given value
    * and consumes no input.
